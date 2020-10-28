@@ -5,6 +5,8 @@
 '''
 
 from skimage import io
+from os.path import dirname
+from .tools_file import create_directory
 
 
 __all__ = ['cut_image_ext', 'cut_image_area']
@@ -32,6 +34,9 @@ def cut_image_ext(file_in,
     """
     # Take image
     my_image = io.imread(file_in, plugin="matplotlib")
+
+    # Create out directory
+    create_directory(dirname(file_out))
 
     # Define variable to cut as we keep entire image
     size = my_image.shape[:2]
@@ -78,6 +83,9 @@ def cut_image_area(file_in,
     """
     # take image
     my_image = io.imread(file_in, plugin="matplotlib")
+
+    # Create out directory
+    create_directory(dirname(file_out))
 
     # Define variable to cut as we keep entire image
     size = my_image.shape[:2]
