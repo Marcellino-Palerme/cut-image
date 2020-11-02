@@ -9,7 +9,7 @@ import logging
 from tkinter import Tk, IntVar, StringVar, Spinbox, BooleanVar
 from tkinter.filedialog import askdirectory, askopenfilename
 import tkinter.ttk as ttk
-from tkinter.messagebox import showinfo, showerror, askyesno, showwarning
+from tkinter.messagebox import showinfo, showerror, askyesno
 from os.path import basename
 
 
@@ -61,8 +61,7 @@ def disable_elemens(part):
     """
     for child in part.winfo_children():
         # we can't disable scrollbar and frame
-        if ('scrollbar' not in child._name and
-            'frame' not in child._name):
+        if ('scrollbar' not in child._name and 'frame' not in child._name):
             child.configure(state='disabled')
 
 
@@ -75,23 +74,22 @@ def enable_elemens(part):
     """
     for child in part.winfo_children():
         # we can't enable scrollbar and frame
-        if ('scrollbar' not in child._name and
-            'frame' not in child._name):
+        if ('scrollbar' not in child._name and 'frame' not in child._name):
             child.configure(state='normal')
 
 
 def reduce_path(path):
     """!@brief
        reduce path of directory to keep only name of directory
-       
+
        @param path (str)
            complete path
     """
     return '... ' + basename(path)
-    
-    
-    
-class CutiInterface (Tk):
+
+
+
+class CutiInterface(Tk):
     """!@brief
         define global windows
     """
@@ -168,8 +166,8 @@ class CutiInterface (Tk):
         self.dict_zone = {}
         for direction in self.direction:
             self.dic_zone[direction + "_state"] = IntVar(value=0)
-            ttk.Checkbutton(self, text=direction, 
-                            command=lambda : self.change_direction(direction)
+            ttk.Checkbutton(self, text=direction,
+                            command=lambda: self.change_direction(direction),
                             variable=self.dic_zone[direction + "_state"]).\
                             grid(column=0, row=row)
             self.dic_zone[direction] = StringVar(value="0")
@@ -202,8 +200,8 @@ class CutiInterface (Tk):
 
         self.input.set(choose_dir(self.input.get()))
         self.input_show.set(reduce_path(self.input.get()))
-        
-        # TODO : while output not modify use value of input 
+
+        # TODO : while output not modify use value of input
 
         logging.debug("OUT")
 
@@ -231,7 +229,7 @@ class CutiInterface (Tk):
             self.dic_zone[direction + "_sp"].configure(state='disabled')
 
         self.verify_all_disable()
-        
+
 
     def star_execute(self):
         """!@brief
@@ -251,10 +249,10 @@ class CutiInterface (Tk):
                                       length=width_win)
         self.gowait.grid(column=0, row=18, columnspan=8)
         self.gowait.start(20)
-        
+
         # Indicate start of execution
         self.execute = True
-        
+
         # Disable all configuration part
         disable_elemens(self)
 
@@ -264,14 +262,14 @@ class CutiInterface (Tk):
         args.output = self.output.get()
         args.area = self.area.get()
 
-	# https://stackoverflow.com/questions/16878315/what-is-the-right-way-to-treat-python-argparse-namespace-as-a-dictionary/16878364#16878364
-	# take value of each direction
-	d_args = vars(args)     
-	for direction in self.direction:
-	    if self.dict_zone[direction + "_state"].get() == 1:
-	        d_args[direction] = int(self.dict_zone[direction])
-	    else:
-	    	d_args[direction] = 0
+        # https://stackoverflow.com/questions/16878315/what-is-the-right-way-to-treat-python-argparse-namespace-as-a-dictionary/16878364#16878364
+	    # take value of each direction
+        d_args = vars(args)
+        for direction in self.direction:
+            if self.dict_zone[direction + "_state"].get() == 1:
+                d_args[direction] = int(self.dict_zone[direction])
+            else:
+                d_args[direction] = 0
 
         # send all parameters
         self.send_pipe.send(args)
@@ -287,7 +285,7 @@ class CutiInterface (Tk):
         """
         self.update()
 
-        if self.execute == True:
+        if self.execute:
             # verify if execution sent the result
             if self.recv_pipe.poll(0.01) is True:
                 logging.info("it captured end execution")
@@ -303,7 +301,7 @@ class CutiInterface (Tk):
 
         # restart in 20ms the verification
         self.after(20, self.maj)
-            
+
 
     def finish_execute(self):
         """!@brief
@@ -321,7 +319,7 @@ class CutiInterface (Tk):
         # Enable all configuration part
         enable_elemens(self)
         self.change_valid()
-        
+
         # Indicate end of execution
         self.execute = False
 
@@ -349,16 +347,14 @@ class CutiInterface (Tk):
             disable GO button if number of selected directions isn't correct
         """
         # Take number of selected directions
-	nb_direction = 0
+        nb_direction = 0
         for direction in self.direction:
-        	nb_direction = nb_direction + 
-        	               self.dict_zone[direction + "_state"].get()
-        	          
-        if (self.area.get() and nb_direction < 3 ) or
-           (!self.area.get() and nb_direction > 2)
+            nb_direction = (nb_direction + 
+                            self.dict_zone[direction + "_state"].get())
 
+        if ((self.area.get() and nb_direction < 3) or
+            (not self.area.get() and nb_direction > 2)):
             disable_elemens(self.launch)
         else:
             enable_elemens(self.launch)
-
 

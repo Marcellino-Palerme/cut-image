@@ -15,6 +15,11 @@ __date__ = '2018-01-25'
 __updated__ = '2020-10-28'
 
 
+class EmptyImage(Exception):
+    """Raised when we cut and obtain a empty image"""
+    pass
+
+
 def cut_image_ext(file_in,
                   file_out,
                   up_side=0,
@@ -59,6 +64,10 @@ def cut_image_ext(file_in,
     elif right_side > 0:
         im_left = max(size[1] - right_side, 0)
 
+    # Empty image case
+    if (im_up==im_down or im_left==im_right):
+        raise EmptyImage
+
     # Save new image
     io.imsave(file_out,
               my_image[im_up:im_down, im_left:im_right, :],
@@ -97,12 +106,12 @@ def cut_image_area(file_in,
     # superposition case
     if (up_side + down_side) >= size[0]:
         temp = up_side
-        up_side = size[0] - down_side
-        down_side = size[0] - temp
+        up_side = min(size[0] - down_side, 0)
+        down_side = min(size[0] - temp, 0)
     if (left_side + right_side) >= size[1]:
         temp = left_side
-        left_side = size[1] - right_side
-        right_side = size[1] - temp
+        left_side = min(size[1] - right_side, 0)
+        right_side = min(size[1] - temp, 0)
 
     # Define up of area
     if up_side > 0:
@@ -116,6 +125,10 @@ def cut_image_area(file_in,
     # Define right of area
     if right_side > 0:
         im_right = max(size[1] - right_side, 0)
+
+    # Empty image case
+    if (im_up==im_down or im_left==im_right):
+        raise EmptyImage
 
     # save new image
     io.imsave(file_out,
