@@ -155,11 +155,11 @@ class CutiInterface(Tk):
         self.area = BooleanVar(value=False)
         rb_area = Radiobutton(self, text="external", variable=self.area,
                               value=False, command=self.verify_all_disable)
-        rb_area.grid(column=1, row=row)
+        rb_area.grid(column=0, row=row)
         rb_area.select()
         Radiobutton(self, text="area",
                     variable=self.area, value=True,
-                    command=self.verify_all_disable).grid(column=2, row=row)
+                    command=self.verify_all_disable).grid(column=1, row=row)
 
         row += 1
 
@@ -170,12 +170,13 @@ class CutiInterface(Tk):
             ttk.Checkbutton(self, text=direction,
                             command=partial(self.change_direction, direction),
                             variable=self.dict_zone[direction + "_state"]).\
-                            grid(column=0, row=row)
+                            grid(column=0, row=row, sticky="W")
             self.dict_zone[direction] = StringVar(value="0")
             self.dict_zone[direction + "_sp"] = Spinbox(self, from_=0, width=4,
                                                         textvariable=
                                                         self.dict_zone[direction])
-            self.dict_zone[direction + "_sp"].grid(column=2, row=row)
+            self.dict_zone[direction + "_sp"].grid(column=1, row=row,
+                                                   sticky="W")
 
             row += 1
 
@@ -359,8 +360,14 @@ class CutiInterface(Tk):
             nb_direction = (nb_direction + 
                             self.dict_zone[direction + "_state"].get())
 
-        if ((self.area.get() and nb_direction < 3) or
-            (not self.area.get() and nb_direction > 2)):
+        # Determinate if opposite direction are selected
+        left_right = self.dict_zone["left_state"].get() and \
+                     self.dict_zone["right_state"].get()
+        up_down = self.dict_zone["up_state"].get() and \
+                  self.dict_zone["down_state"].get()
+
+        if ((not self.area.get() and nb_direction > 2) or
+            (not self.area.get() and (left_right or up_down))  ):
             disable_elemens(self.launch)
         else:
             enable_elemens(self.launch)
