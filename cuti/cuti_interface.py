@@ -6,11 +6,12 @@ This module provide the interface class
 """
 
 import logging
-from tkinter import Tk, IntVar, StringVar, Spinbox, BooleanVar
+from tkinter import Tk, IntVar, StringVar, Spinbox, BooleanVar, Radiobutton
 from tkinter.filedialog import askdirectory, askopenfilename
 import tkinter.ttk as ttk
 from tkinter.messagebox import showinfo, showerror, askyesno
 from os.path import basename
+from functools import partial
 
 
 def choose_dir(old_dir):
@@ -152,28 +153,29 @@ class CutiInterface(Tk):
 
         # mode of cuti
         self.area = BooleanVar(value=False)
-        rb_area = ttk.Radiobutton(self, text="external", variable=self.area,
-                                  value=False, command=self.verify_all_disable)
+        rb_area = Radiobutton(self, text="external", variable=self.area,
+                              value=False, command=self.verify_all_disable)
         rb_area.grid(column=1, row=row)
         rb_area.select()
-        ttk.Radiobutton(self, text="area",
-                        variable=self.area, value=True,
-                        command=self.verify_all_disable).grid(column=2, row=row)
+        Radiobutton(self, text="area",
+                    variable=self.area, value=True,
+                    command=self.verify_all_disable).grid(column=2, row=row)
 
         row += 1
 
         # zones
         self.dict_zone = {}
         for direction in self.direction:
-            self.dic_zone[direction + "_state"] = IntVar(value=0)
+            self.dict_zone[direction + "_state"] = IntVar(value=0)
             ttk.Checkbutton(self, text=direction,
-                            command=lambda: self.change_direction(direction),
-                            variable=self.dic_zone[direction + "_state"]).\
+                            command=partial(self.change_direction, direction),
+                            variable=self.dict_zone[direction + "_state"]).\
                             grid(column=0, row=row)
-            self.dic_zone[direction] = StringVar(value="0")
-            self.dic_zone[direction + "_sp"] = Spinbox(self, from_=0, width=4,
-                                                       textvariable=self.left)
-            self.dic_zone[direction + "_sp"].grid(column=2, row=row)
+            self.dict_zone[direction] = StringVar(value="0")
+            self.dict_zone[direction + "_sp"] = Spinbox(self, from_=0, width=4,
+                                                        textvariable=
+                                                        self.dict_zone[direction])
+            self.dict_zone[direction + "_sp"].grid(column=2, row=row)
 
             row += 1
 
@@ -183,6 +185,11 @@ class CutiInterface(Tk):
         self.gowait = ttk.Button(self.launch, text="GO",
                                  command=self.star_execute)
         self.gowait.grid(column=4, row=row, columnspan=2)
+
+
+        # initialise state
+        for direction in self.direction:
+            self.change_direction(direction)
 
         # Capture closed windows
         self.protocol("WM_DELETE_WINDOW", self.close)
@@ -223,10 +230,10 @@ class CutiInterface(Tk):
             @param direction : str
                 left, right, up, down
         """
-        if self.dic_zone[direction + "_state"].get() == 1:
-            self.dic_zone[direction + "_sp"].configure(state='normal')
+        if self.dict_zone[direction + "_state"].get() == 1:
+            self.dict_zone[direction + "_sp"].configure(state='normal')
         else:
-            self.dic_zone[direction + "_sp"].configure(state='disabled')
+            self.dict_zone[direction + "_sp"].configure(state='disabled')
 
         self.verify_all_disable()
 

@@ -7,6 +7,6 @@
 
 __version__ = "1.1"
 
-from .cuti import cut_image_ext, cut_image_area
+from .cuti import cut_image_ext, cut_image_area, EmptyImage
 from .arguments import arguments
 from .tools_file import create_directory, file_list, copy
