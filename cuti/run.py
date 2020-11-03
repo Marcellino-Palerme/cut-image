@@ -80,7 +80,6 @@ def execute(my_args):
     
     # Take all file of input directory
     in_files = file_list(my_args.input)
-    temp = []
     log = None
     
     if my_args.area:
@@ -91,7 +90,7 @@ def execute(my_args):
     for my_file in in_files:
         try:
             used_function(file_in=join(my_args.input, my_file),
-                          file_out=join(my_args.ouput, my_file),
+                          file_out=join(my_args.output, my_file),
                           left_side=my_args.left,
                           right_side=my_args.right,
                           up_side=my_args.up,

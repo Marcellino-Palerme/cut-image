@@ -12,6 +12,7 @@ import tkinter.ttk as ttk
 from tkinter.messagebox import showinfo, showerror, askyesno
 from os.path import basename
 from functools import partial
+from sys import maxsize
 
 
 def choose_dir(old_dir):
@@ -172,7 +173,8 @@ class CutiInterface(Tk):
                             variable=self.dict_zone[direction + "_state"]).\
                             grid(column=0, row=row, sticky="W")
             self.dict_zone[direction] = StringVar(value="0")
-            self.dict_zone[direction + "_sp"] = Spinbox(self, from_=0, width=4,
+            self.dict_zone[direction + "_sp"] = Spinbox(self, from_=0, 
+                                                        to= maxsize, width=4,
                                                         textvariable=
                                                         self.dict_zone[direction])
             self.dict_zone[direction + "_sp"].grid(column=1, row=row,
@@ -195,8 +197,6 @@ class CutiInterface(Tk):
         # Capture closed windows
         self.protocol("WM_DELETE_WINDOW", self.close)
         logging.info("OUT")
-
-        self.verify_all_disable()
 
 
     def choose_dir_i(self):
@@ -275,7 +275,7 @@ class CutiInterface(Tk):
         d_args = vars(args)
         for direction in self.direction:
             if self.dict_zone[direction + "_state"].get() == 1:
-                d_args[direction] = int(self.dict_zone[direction])
+                d_args[direction] = int(self.dict_zone[direction].get())
             else:
                 d_args[direction] = 0
 
@@ -326,7 +326,8 @@ class CutiInterface(Tk):
         self.update()
         # Enable all configuration part
         enable_elemens(self)
-        self.change_valid()
+        for direction in self.direction:
+            self.change_direction(direction)
 
         # Indicate end of execution
         self.execute = False
