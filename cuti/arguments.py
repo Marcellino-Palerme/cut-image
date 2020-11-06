@@ -9,6 +9,8 @@
 """
 
 from argparse import ArgumentParser, RawTextHelpFormatter
+from os.path import abspath
+import sys
 
 __all__ = ['arguments']
 
@@ -65,7 +67,7 @@ image.
 
     # Directory where are file to modified
     parser.add_argument("-o", "--output", dest="output", type=str,
-                        help="Directory where we save results", default="out")
+                        help="Directory where we save results", default="./out")
 
     # option to define a zone to keep
     parser.add_argument("-a", "--area", dest="area", default=False,
@@ -98,5 +100,13 @@ image.
                            ((args.up > 1) and (args.down > 1))):
         parser.error("use opposite direction")
 
+    # protection of overwrite
+    args.input = abspath(args.input)
+    args.output = abspath(args.output)
+    if args.input==args.output:
+        answer = input("You are about overwrite your files. Continue: y/n? ")
+
+    if answer!='y' or answer!='Y':
+       sys.exit(0)
 
     return args

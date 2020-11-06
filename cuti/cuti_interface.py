@@ -10,7 +10,7 @@ from tkinter import Tk, IntVar, StringVar, Spinbox, BooleanVar, Radiobutton
 from tkinter.filedialog import askdirectory, askopenfilename
 import tkinter.ttk as ttk
 from tkinter.messagebox import showinfo, showerror, askyesno
-from os.path import basename
+from os.path import basename, abspath
 from functools import partial
 from sys import maxsize
 
@@ -159,8 +159,8 @@ class CutiInterface(Tk):
 
         ttk.Button(self, text="...", command=self.choose_dir_o).\
                    grid(column=0, row=row, sticky='W')
-        self.output = StringVar(value="out")
-        self.output_show = StringVar(value=self.input.get())
+        self.output = StringVar(value="./out")
+        self.output_show = StringVar(value=self.output.get())
         ttk.Label(self, textvariable=self.output_show,
                   wraplength=1200, style='path.TLabel').\
             grid(column=1, row=row, columnspan=5, sticky="W")
@@ -288,6 +288,17 @@ class CutiInterface(Tk):
         args = self.args
         args.input = self.input.get()
         args.output = self.output.get()
+
+        # protection of overwrite
+        args.input = abspath(args.input)
+        args.output = abspath(args.output)
+        if args.input==args.output:
+            if askyesno("Overwrite",
+                        "You are about overwrite your files. continue: y/n ?"):
+                self.finish_execute()
+                logging.debug("OUT")
+                return                
+
         args.area = self.area.get()
 
         # https://stackoverflow.com/questions/16878315/what-is-the-right-way-to-treat-python-argparse-namespace-as-a-dictionary/16878364#16878364

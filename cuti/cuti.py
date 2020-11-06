@@ -10,9 +10,9 @@ from .tools_file import create_directory
 
 
 __all__ = ['cut_image_ext', 'cut_image_area']
-__version__ = 1.2
+__version__ = 1.3
 __date__ = '2018-01-25'
-__updated__ = '2020-11-05'
+__updated__ = '2020-11-06'
 
 
 class EmptyImage(Exception):
