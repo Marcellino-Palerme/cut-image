@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='cuti',
-    version='1.1',
+    version='1.2',
     author='Marcellino Palerme',
     author_email='marcellino.palerme@inra.fr',
     description='cut several images.',

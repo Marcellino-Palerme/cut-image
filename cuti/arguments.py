@@ -39,7 +39,7 @@ It has to indicate which zone we keep.
 -Keep left
 -Keep right
 -keep a 'center' area (-a -u 74 -d 42 -l 90 -r 14)
--keep combination up-left (e.g. -u 40 -l 25) or right
+-keep combination up-left (e.g. -u 40 -l 25)
 -Keep combination down-left or right (e.g. -d 80 -r 75)
 
 Several combinations in same time is impossible instead of use area
@@ -56,7 +56,7 @@ image.
                             formatter_class=RawTextHelpFormatter)
 
     # use command line
-    parser.add_argument("-l", "--commandline", dest="line", action="store_true",
+    parser.add_argument("-c", "--commandline", dest="line", action="store_true",
                         default=False, help="use command line")
 
     # Directory where are images with barcode
@@ -86,8 +86,17 @@ image.
     if not args.line:
         return args
 
-    # Verify use only two zone for external mode
-    if not args.area & ((args.up + args.down + args.left + args.right) > 2):
-        parser.error("There is too much defined zone")
+    nb_direction = (int(args.left > 1) + int(args.right > 1) +
+                    int(args.up > 1) + int(args.down > 1))
+
+    # miss direction to cut
+    if nb_direction == 0:
+        parser.error("Miss a direction")
+
+    # in mode external no choice opposite direction
+    if not args.area and (((args.left > 1) and (args.right > 1)) or
+                           ((args.up > 1) and (args.down > 1))):
+        parser.error("use opposite direction")
+
 
     return args

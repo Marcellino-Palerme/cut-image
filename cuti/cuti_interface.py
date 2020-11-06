@@ -89,7 +89,21 @@ def reduce_path(path):
     """
     return '... ' + basename(path)
 
-
+def validate_sp(value_input):
+    """!@brief
+       validate value of Spinbox. This value have to be interger.
+       0 > value > maxsize
+    """
+    # verify we have a digital
+    if value_input.isdigit():
+        # verify this digit is > 0
+        if int(value_input) > 0 and int(value_input) < maxsize:
+            return True
+        else:
+            return False
+    else:
+        return False
+    
 
 class CutiInterface(Tk):
     """!@brief
@@ -145,7 +159,7 @@ class CutiInterface(Tk):
 
         ttk.Button(self, text="...", command=self.choose_dir_o).\
                    grid(column=0, row=row, sticky='W')
-        self.output = StringVar(value=self.input.get())
+        self.output = StringVar(value="out")
         self.output_show = StringVar(value=self.input.get())
         ttk.Label(self, textvariable=self.output_show,
                   wraplength=1200, style='path.TLabel').\
@@ -165,6 +179,8 @@ class CutiInterface(Tk):
         row += 1
 
         # zones
+        # add callback function to validate value of Spinbox
+        validate_sp_command = self.register(validate_sp)
         self.dict_zone = {}
         for direction in self.direction:
             self.dict_zone[direction + "_state"] = IntVar(value=0)
@@ -172,11 +188,15 @@ class CutiInterface(Tk):
                             command=partial(self.change_direction, direction),
                             variable=self.dict_zone[direction + "_state"]).\
                             grid(column=0, row=row, sticky="W")
-            self.dict_zone[direction] = StringVar(value="0")
-            self.dict_zone[direction + "_sp"] = Spinbox(self, from_=0, 
+            self.dict_zone[direction] = StringVar(value="1")
+            self.dict_zone[direction + "_sp"] = Spinbox(self, from_=1, 
                                                         to= maxsize, width=4,
                                                         textvariable=
-                                                        self.dict_zone[direction])
+                                                        self.dict_zone[direction],
+                                                        validate='all',
+                                                        validatecommand=
+                                                        (validate_sp_command,
+                                                         '%P'))
             self.dict_zone[direction + "_sp"].grid(column=1, row=row,
                                                    sticky="W")
 
@@ -368,7 +388,8 @@ class CutiInterface(Tk):
                   self.dict_zone["down_state"].get()
 
         if ((not self.area.get() and nb_direction > 2) or
-            (not self.area.get() and (left_right or up_down))  ):
+            (not self.area.get() and (left_right or up_down)) or
+            nb_direction == 0):
             disable_elemens(self.launch)
         else:
             enable_elemens(self.launch)

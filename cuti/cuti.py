@@ -10,9 +10,9 @@ from .tools_file import create_directory
 
 
 __all__ = ['cut_image_ext', 'cut_image_area']
-__version__ = 1.1
+__version__ = 1.2
 __date__ = '2018-01-25'
-__updated__ = '2020-10-28'
+__updated__ = '2020-11-05'
 
 
 class EmptyImage(Exception):
@@ -103,15 +103,10 @@ def cut_image_area(file_in,
     im_left = 0
     im_right = size[1]
 
-    # superposition case
-    if (up_side + down_side) >= size[0]:
-        temp = up_side
-        up_side = min(size[0] - down_side, 0)
-        down_side = min(size[0] - temp, 0)
-    if (left_side + right_side) >= size[1]:
-        temp = left_side
-        left_side = min(size[1] - right_side, 0)
-        right_side = min(size[1] - temp, 0)
+    # superposition and empty image case
+    if (((up_side + down_side) >= size[0]) or 
+        ((left_side + right_side) >= size[1])):
+        raise EmptyImage
 
     # Define up of area
     if up_side > 0:
@@ -125,10 +120,7 @@ def cut_image_area(file_in,
     # Define right of area
     if right_side > 0:
         im_right = max(size[1] - right_side, 0)
-
-    # Empty image case
-    if (im_up==im_down or im_left==im_right):
-        raise EmptyImage
+        
 
     # save new image
     io.imsave(file_out,
