@@ -10,7 +10,7 @@ setup(
     author='Marcellino Palerme',
     author_email='marcellino.palerme@inra.fr',
     description='cut several images.',
-    license='CC BY 3.0',
+    license='CeCILL 2.1',
     url='https://sourcesup.renater.fr/projects/cut-image',
     scripts=["cuti/run.py"],
     classifiers=['Programming Language::Python'],

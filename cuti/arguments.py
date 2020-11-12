@@ -26,13 +26,11 @@ def arguments():
     description = '''%s
 
   Created by Marcellino PALERME.
-  Copyright 2020 organization_name. All rights reserved.
+  Copyright 2020 INRAE. All rights reserved.
 
-  Licensed under the Apache License 2.0
-  http://www.apache.org/licenses/LICENSE-2.0
-
-  Distributed on an "AS IS" basis without warranties
-  or conditions of any kind, either express or implied.
+  Licensed under CeCILL 2.1
+  https://cecill.info/licences/Licence_CeCILL_V2.1-fr.html
+  https://cecill.info/licences/Licence_CeCILL_V2.1-en.html
 
 USAGE
 It has to indicate which zone we keep.
