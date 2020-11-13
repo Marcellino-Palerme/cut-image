@@ -4,7 +4,7 @@
 
 Summary:cut images
 Name: cuti
-Version: 1.2
+Version: 1.3
 Release: 1
 License: CeCILL 2.1
 Group: File tools
