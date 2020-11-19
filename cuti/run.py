@@ -140,7 +140,7 @@ def interface_proc(argument, send_pipe, recv_pipe):
     logging.debug("IN")
     app = ci.CutiInterface(argument=argument, send_pipe=send_pipe, 
                            recv_pipe=recv_pipe)
-    app.title("CAB")
+    app.title("CUTI")
     app.mainloop()
     logging.debug("OUT")
 
